@@ -3,17 +3,14 @@ module AdBird
     DEFAULT_UPSTREAMS = [ [ :udp, '8.8.8.8', 53 ], [ :tcp, '8.8.8.8', 53 ] ].freeze
 
     class Upstream
-      def initialize(transaction)
-        @transaction = transaction
+      def initialize
       end
 
-      def process
+      def process(transaction)
         transaction.passthrough!(upstream)
       end
 
       private
-
-        attr_reader :transaction
 
         def upstream
           @upstream ||= RubyDNS::Resolver.new(DEFAULT_UPSTREAMS)

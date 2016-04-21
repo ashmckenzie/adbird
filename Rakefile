@@ -4,6 +4,11 @@ $LOAD_PATH.unshift(lib_path) unless $LOAD_PATH.include?(lib_path)
 require 'adbird'
 
 namespace :adbird do
+  task :console do
+    require 'pry-byebug'
+    binding.pry
+  end
+
   desc 'Start server'
   task :start do
     AdBird::Server.new.start

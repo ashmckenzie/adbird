@@ -1,4 +1,5 @@
 require 'adbird/version'
+require 'adbird/hosts'
 require 'adbird/server'
 require 'adbird/lookups'
 

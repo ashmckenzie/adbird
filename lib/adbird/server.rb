@@ -5,6 +5,8 @@ module AdBird
     RESOLV_NAME = Resolv::DNS::Name
     RESOLV_IN = Resolv::DNS::Resource::IN
 
+    HOST_FILES = %w( data/hosts1.txt data/hosts2.txt data/hosts3.txt ).freeze
+
     def initialize(interfaces: DEFAULT_INTERFACES)
       @interfaces = interfaces
     end
@@ -14,8 +16,16 @@ module AdBird
         on(:start) do
           @logger.level = Logger::INFO
         end
-        match(/blah\.com/, RESOLV_IN::A) { |transaction| Lookups::BlackHole.new(transaction).process }
-        otherwise { |transaction| Lookups::Upstream.new(transaction).process }
+
+        black_hole_lookup        = Lookups::BlackHole.new
+        upstream_lookup          = Lookups::Upstream.new
+        black_hole_domains_regex = Hosts.new(HOST_FILES).black_hole_domains_regex
+
+        match(black_hole_domains_regex, RESOLV_IN::A) do |transaction|
+          black_hole_lookup.process(transaction)
+        end
+
+        otherwise { |transaction| upstream_lookup.process(transaction) }
       end
     end
 

@@ -1,17 +1,12 @@
 module AdBird
   module Lookups
     class BlackHole
-      def initialize(transaction)
-        @transaction = transaction
+      def initialize
       end
 
-      def process
+      def process(transaction)
         transaction.respond!('127.0.0.1')
       end
-
-      private
-
-        attr_reader :transaction
     end
   end
 end
